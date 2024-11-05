@@ -189,7 +189,7 @@ const setupBalls = () => {
             for (let circle of circles) {
                 circle.pos.x += circle.vel.x / maxSteps * deltaTime;
                 circle.pos.y += circle.vel.y / maxSteps * deltaTime;
-                circle.vel.y += G / maxSteps;
+                circle.vel.y += G / maxSteps * deltaTime;
                 if (circle.pos.x > W - circle.r) {
                     circle.vel.x *= -restitution;
                     circle.pos.x = W - circle.r - 0.01;
