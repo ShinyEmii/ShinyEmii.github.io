@@ -3,7 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const scrollBehaviour = () => scroll.style.transform = `scale(${window.scrollY / window.scrollMaxY}, 1)`;
     window.ontouchmove = () => scrollBehaviour();
     window.onscroll = () => scrollBehaviour();
-    scrollBehaviour();
+    document.addEventListener("contextmenu", function(event) {
+        event.preventDefault();
+    });
     enableBalls();
     enableAbout();
 });

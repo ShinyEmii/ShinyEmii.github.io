@@ -28,43 +28,37 @@ const setupBalls = () => {
     };
     resize();
     document.body.onresize = () => resize();
-
-    let mode = 0;
     let G = 7;
     let restitution = 0.9;
     let maxSteps = 16;
     let lastTime = 0;
 
     window.addEventListener("mousemove", (e) => {
-        if (e.target != balls) 
+        if (e.target != balls) {
+            mouse.held = false;
             return;
+        }
         mouse.pos.x = e.layerX;
         mouse.pos.y = e.layerY;
     });
     window.addEventListener("mousedown", (e) => {
-        if (e.button == 0) {
+        if (e.button == 2) {
             mouse.held = true;
             lastMousePos = {...mouse.pos};
         }
-        if (mode == 0 && mouse.pos.x != null && e.button == 0)
+        if (mouse.pos.x != null && e.button == 0)
             addCircle(vector(mouse.pos.x, mouse.pos.y), 15);
     });
     window.addEventListener("mouseup", (e) => {
-        if (e.button == 0)
+        if (e.button == 2)
             mouse.held = false;
     });
     window.addEventListener("keydown", (e) => {
         switch (e.key) {
             case "1":
-                mode = 0;
-                break;
-            case "2":
-                mode = 1;
-                break;
-            case "3":
                 circles = [];
                 break;
-            case "4":
+            case "2":
                 lines = [];
                 break;
         }
@@ -173,13 +167,9 @@ const setupBalls = () => {
     let circles = [];
     const addLine = (a, b) => {
         lines.push({a: {...a}, b: {...b}});
-        if (lines.length > 800)
-            lines.shift();
     }
     const addCircle = (pos, r, vel = vector(Math.random() / 10.0, Math.random() / 10.0)) => {
         circles.push({pos: pos, r: r, vel: vel});
-        if (circles.length > 25)
-            circles.shift();
     }
 
     const update = (timestamp) => {
@@ -188,7 +178,7 @@ const setupBalls = () => {
         let deltaTime = (timestamp - lastTime) / 1000;
         lastTime = timestamp;
         clear();
-        if (mouse.held && mode == 1 && mouse.pos.x != null) {
+        if (mouse.held && mouse.pos.x != null) {
             let d = Math.pow(lastMousePos.x - mouse.pos.x, 2) + Math.pow(lastMousePos.y - mouse.pos.y, 2);
             if (d > 1) {
                 addLine(lastMousePos, mouse.pos);
