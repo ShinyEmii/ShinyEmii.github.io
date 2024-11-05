@@ -1,69 +1,218 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tiny5&display=swap');
+:root {
+    --about-glow: 0 0 5px rgb(162, 0, 255), 0 0 25px rgba(162, 0, 255, 50%), 0 0 125px rgba(162, 0, 255, 25%);
+}
+
 * {
     padding: 0;
     margin: 0;
-    font-family: Roboto;
+    border: 0;
+    outline: none;
+}
+html {
+    scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+    visibility: hidden;
+}
+.scroll {
+    position: fixed;
+    bottom: 0;
+    background-color: white;
+    width: 100%;
+    height: .5rem;
+    transform-origin: 0%;
+    z-index: 999;
 }
 
-body {
-    width: 100vw;
+.welcome {
+    display: flex;
+    width: 100%;
     height: 100vh;
-    background-color: #080808;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at 0% 80%, hsl(330, 84%, 67%), transparent 70%), hsl(36, 100%, 65%) radial-gradient(circle at 100% 30%, hsl(185, 75%, 53%), transparent 70%); 
 }
-
-.main {
+.welcome::after {
+    content: " ";
+    position: absolute;
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow-x: hidden;
-}
-
-.view {
-    background-color: #0d0d0d;
-    width: auto;
-    height: auto;
-    border-radius: 1rem;
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    gap: .5rem;
-    padding: 1rem 1rem;
-    margin: 1rem;
-}
-
-#secondary {
-    grid-template-columns: repeat(15, 1fr)
-}
-
-.color {
-    width: 2rem;
-    height: 2rem;
-    background-color: #f0f;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition-property: transform;
-    transition-duration: 250ms;
-    box-shadow: 0 0 5px #000;
-}
-
-.color:hover {
-    transform: scale(1.75);
+    background-image: url("img/noise.png");
+    mix-blend-mode: overlay;
+    opacity: 15%;
     z-index: 998;
 }
-
-#popup {
-    position: absolute;
-    bottom: 1rem;
-    left: 50%;
-    transform: translate(-50%);
-    padding: 1rem 2rem;
-    width: auto;
-    border-radius: 1rem;
-    background-color: #000000C0;
-    backdrop-filter: blur(.2rem);
-    z-index: 999;
-    font-size: 1.5rem;
-    text-align: center;
+.welcome .title {
+    font-family: "Pacifico", cursive;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 4rem;
     color: white;
+    text-shadow: 0 0.3rem 0 hsl(278, 57%, 58%);
+}
+
+.balls {
+    user-select: none;
+    -moz-user-select: none;
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 0;
+    overflow-y: hidden;
+    background-color: rgb(8, 8, 8);
+    font-weight: 400;
+    font-style: normal;
+    color: white;
+    transition-property: height;
+    transition-duration: 2s;
+    font-family: Ubuntu Mono;
+}
+.balls::after {
+    content: " ";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("img/noise.png");
+    mix-blend-mode: overlay;
+    opacity: 25%;
+    z-index: 998;
+}
+.balls #help {
+    position: absolute;
+    color: white;
+    z-index: 1;
+    font-size: 1rem;
+}
+.balls #info {
+    position: absolute;
+    color: white;
+    z-index: 1;
+    font-size: 1rem;
+    bottom: 0;
+    right: 0;
+}
+.balls canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.about {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(165deg, hsl(279, 100%, 2%), hsl(279, 100%, 3%) 100%); 
+    font-family: "Tiny5", sans-serif;
+    overflow: hidden;
+}
+.about::after {
+    content: " ";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("img/noise.png");
+    mix-blend-mode: overlay;
+    opacity: 60%;
+    z-index: 998;
+    pointer-events: none;
+}
+.about h1 {
+    user-select: none;
+    -moz-user-select: none;
+    color: white;
+    font-weight: 500;
+    font-size: 3rem;
+    text-shadow: var(--about-glow);
+    cursor: pointer;
+    z-index: 2;
+}
+.about .float {
+    user-select: none;
+    -moz-user-select: none;
+    position: absolute;
+    font-weight: 500;
+    white-space: nowrap;
+    color: rgb(224, 170, 255);
+    animation: fade 8s cubic-bezier(0.37, 0, 0.63, 1) forwards;
+    text-shadow: var(--about-glow);
+    transform: translateX(-50%);
+}
+.about .star {
+    user-select: none;
+    -moz-user-select: none;
+    position: absolute;
+    background-color: white;
+    box-shadow: var(--about-glow);
+    aspect-ratio: 1/1;
+}
+@keyframes fade {
+    0%, 100% {
+        opacity: 0;
+    }
+    25%, 75% {
+        opacity: 75%;
+    }
+}
+@keyframes star {
+    0% { transform: scale(0.8); }
+    5% { transform: scale(0.65); }
+    10% { transform: scale(0.7); }
+    15% { transform: scale(0.75); }
+    20% { transform: scale(0.8); }
+    25% { transform: scale(0.85); }
+    30% { transform: scale(0.9); }
+    35% { transform: scale(0.95); }
+    40% { transform: scale(1.0); }
+    45% { transform: scale(0.95); }
+    50% { transform: scale(0.9); }
+    55% { transform: scale(0.85); }
+    60% { transform: scale(0.8); }
+    63% { transform: scale(0.7); }
+    65% { transform: scale(0.25); }
+    67% { transform: scale(0.6); }
+    70% { transform: scale(0.7); }
+    75% { transform: scale(0.65); }
+    80% { transform: scale(0.6); }
+    85% { transform: scale(0.65); }
+    88% { transform: scale(0.7); }
+    90% { transform: scale(0.1); }
+    92% { transform: scale(0.7); }
+    95% { transform: scale(0.75); }
+    100% { transform: scale(0.8); }
+}
+
+.projects {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: "Outfit", sans-serif;
+    overflow: hidden;
+    background: linear-gradient(165deg, hsl(216, 100%, 73%), hsl(300, 100%, 73%) 100%); 
+}
+.projects::after {
+    content: " ";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("img/noise.png");
+    mix-blend-mode: overlay;
+    opacity: 20%;
+    z-index: 998;
+    pointer-events: none;
+}
+.projects h1 {
+    color: black;
+    font-weight: 200;
 }
