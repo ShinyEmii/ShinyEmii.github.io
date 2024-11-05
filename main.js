@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const scroll = document.querySelector(".scroll");
     const scrollBehaviour = () => scroll.style.transform = `scale(${window.scrollY / window.scrollMaxY}, 1)`;
+    scrollBehaviour();
     window.ontouchmove = () => scrollBehaviour();
     window.onscroll = () => scrollBehaviour();
     document.addEventListener("contextmenu", function(event) {
