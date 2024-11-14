@@ -28,7 +28,7 @@ const setupBalls = () => {
     };
     resize();
     document.body.onresize = () => resize();
-    let G = 7;
+    let G = 500;
     let restitution = 0.9;
     let maxSteps = 16;
     let lastTime = 0;
