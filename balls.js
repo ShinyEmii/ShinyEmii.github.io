@@ -13,6 +13,10 @@ const setupBalls = () => {
 	const balls = document.querySelector(".balls");
     const canvas = document.querySelector(".balls canvas");
     const countElement = document.querySelector(".balls #help #count");
+    const debugFrame = document.querySelector(".balls #debug #frameTime");
+    const debugBalls = document.querySelector(".balls #debug #ballCount");
+    const debugLines = document.querySelector(".balls #debug #lineCount");
+
     balls.style.height = "100vh";
     let animated = false;
     balls.addEventListener('transitionstart', () => animated = true);
@@ -53,9 +57,11 @@ const setupBalls = () => {
     window.addEventListener("keydown", (e) => {
         switch (e.key) {
             case "1":
+                debugBalls.innerText = `Balls: 0`;
                 circles = [];
                 break;
             case "2":
+                debugLines.innerText = `Lines: 0`;
                 lines = [];
                 break;
             case "3":
@@ -69,7 +75,7 @@ const setupBalls = () => {
                 countElement.innerText = `Ball count: ${count}`;
                 break;
             case "ArrowRight":
-                count = Math.min(20, count + 1);
+                count += 1;
                 countElement.innerText = `Ball count: ${count}`;
                 break;
         }
@@ -178,6 +184,7 @@ const setupBalls = () => {
     let circles = [];
     const addLine = (a, b) => {
         lines.push({a: {...a}, b: {...b}});
+        debugLines.innerText = `Lines: ${lines.length}`;
     }
 
     const getColor = () => {
@@ -186,6 +193,7 @@ const setupBalls = () => {
 
     const addCircle = (pos, r, vel = vector(Math.random() / 10.0, Math.random() / 10.0), color = getColor()) => {
         circles.push({pos: pos, r: r, vel: vel, color: color});
+        debugBalls.innerText = `Balls: ${circles.length}`;
     }
 
     const circleTree = [];
@@ -243,7 +251,8 @@ const setupBalls = () => {
             treeWidth = Math.ceil(W / 30);
             treeHeight = Math.ceil(H / 30);
         }
-        let deltaTime = Math.min((timestamp - lastTime) / 1000, 0.1);
+        let deltaTime = Math.min((timestamp - lastTime) / 1000, .2);
+        debugFrame.innerText = `Frame Time: ${parseInt(deltaTime * 1000)}ms`;
         lastTime = timestamp;
         clear();
         updateTree();

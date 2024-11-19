@@ -95,6 +95,14 @@ html::-webkit-scrollbar {
     bottom: 0;
     right: 0;
 }
+.balls #debug {
+    position: absolute;
+    color: white;
+    z-index: 1;
+    font-size: 1rem;
+    right: 0;
+    text-align: right;
+}
 .balls canvas {
     position: absolute;
     width: 100%;
