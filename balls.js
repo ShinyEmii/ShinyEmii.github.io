@@ -12,6 +12,7 @@ const enableBalls = () => {
 const setupBalls = () => {
 	const balls = document.querySelector(".balls");
     const canvas = document.querySelector(".balls canvas");
+    const countElement = document.querySelector(".balls #help #count");
     balls.style.height = "100vh";
     let animated = false;
     balls.addEventListener('transitionstart', () => animated = true);
@@ -20,14 +21,8 @@ const setupBalls = () => {
     let W, H;
     let mouse = {pos: {x: null, y: null}, held: false};
     let lastMousePos = {x: 0, y: 0};
+    let count = 1;
 
-    const resize = () => {
-        W = canvas.clientWidth;
-        H = canvas.clientHeight;
-        canvas.width = W; canvas.height = H;
-    };
-    resize();
-    document.body.onresize = () => resize();
     let G = 500;
     let restitution = 0.9;
     let maxSteps = 16;
@@ -46,8 +41,10 @@ const setupBalls = () => {
             mouse.held = true;
             lastMousePos = {...mouse.pos};
         }
-        if (mouse.pos.x != null && e.button == 0)
-            addCircle(vector(mouse.pos.x, mouse.pos.y), 15);
+        if (mouse.pos.x != null && e.button == 0) {
+            for (let i = 0; i < count; i++)
+                addCircle(vector(mouse.pos.x, mouse.pos.y), 15);
+        }
     });
     window.addEventListener("mouseup", (e) => {
         if (e.button == 2)
@@ -60,6 +57,14 @@ const setupBalls = () => {
                 break;
             case "2":
                 lines = [];
+                break;
+            case "ArrowLeft":
+                count = Math.max(1, count - 1);
+                countElement.innerText = `Ball count: ${count}`;
+                break;
+            case "ArrowRight":
+                count = Math.min(20, count + 1);
+                countElement.innerText = `Ball count: ${count}`;
                 break;
         }
     });
@@ -172,12 +177,65 @@ const setupBalls = () => {
         circles.push({pos: pos, r: r, vel: vel});
     }
 
+    const circleTree = [];
+    const lineTree = [];
+    let treeWidth = Math.ceil(W / 30);
+    let treeHeight = Math.ceil(H / 30);
+
+    let resizing = false;
+    document.body.onresize = () => resizing = true;
+
+    const clearTree = () => {
+        for (let x = 0; x < treeWidth; x++) {
+            circleTree[x] = [];
+            for (let y = 0; y < treeHeight; y++)
+                circleTree[x][y] = [];
+        }
+        if (animated || lastLineLength != lines.length || resizing)
+            for (let x = 0; x < treeWidth; x++) {
+                lineTree[x] = [];
+                for (let y = 0; y < treeHeight; y++)
+                    lineTree[x][y] = [];
+            }
+    }
+    let lastLineLength = 0;
+    clearTree();
+    const updateTree = () => {
+        clearTree();
+        for (let circle of circles) {
+            let x = Math.floor(circle.pos.x / W * treeWidth);
+            let y = Math.floor(circle.pos.y / H * treeHeight);
+            if (isNaN(x) || isNaN(y) || x < 0 || x >= treeWidth || y < 0 || y >= treeHeight) 
+                continue;
+            circleTree[x][y].push(circle); 
+        }
+        if (lines.length != lastLineLength || animated || resizing) {
+            for (let line of lines) {
+                let x0 = Math.floor(line.a.x / W * treeWidth);
+                let y0 = Math.floor(line.a.y / H * treeHeight);
+                let x1 = Math.floor(line.b.x / W * treeWidth);
+                let y1 = Math.floor(line.b.y / H * treeHeight);
+                if (!(isNaN(x0) || isNaN(y0) || x0 < 0 || x0 >= treeWidth || y0 < 0 || y0 >= treeHeight)) 
+                    lineTree[x0][y0].push(line); 
+                if (!(isNaN(x1) || isNaN(y1) || x1 < 0 || x1 >= treeWidth || y1 < 0 || y1 >= treeHeight)) 
+                    lineTree[x1][y1].push(line); 
+            }
+            lastLineLength = lines.length;
+        }
+    }
+
     const update = (timestamp) => {
-        if (animated)
-            resize();
-        let deltaTime = (timestamp - lastTime) / 1000;
+        if (resizing || animated) {
+            W = canvas.clientWidth;
+            H = canvas.clientHeight;
+            canvas.width = W; canvas.height = H;
+            treeWidth = Math.ceil(W / 30);
+            treeHeight = Math.ceil(H / 30);
+        }
+        let deltaTime = Math.min((timestamp - lastTime) / 1000, 0.1);
         lastTime = timestamp;
         clear();
+        updateTree();
         if (mouse.held && mouse.pos.x != null) {
             let d = Math.pow(lastMousePos.x - mouse.pos.x, 2) + Math.pow(lastMousePos.y - mouse.pos.y, 2);
             if (d > 1) {
@@ -205,14 +263,29 @@ const setupBalls = () => {
                 if (circle.pos.y < circle.r) {
                     circle.vel.y *= -restitution;
                     circle.pos.y = circle.r + 0.01;
+                } 
+                let x = Math.floor(circle.pos.x / W * treeWidth);
+                let y = Math.floor(circle.pos.y / H * treeHeight);
+                for (let i = 0; i < 9; i++) {
+                    let treeX = (x - 1) + i % 3;
+                    let treeY = (y - 1) + Math.floor(i / 3);
+                    if (isNaN(treeX) || isNaN(treeY) || treeX >= treeWidth || treeX < 0 || treeY >= treeHeight || treeY < 0) 
+                        continue;
+                    for (let line of lineTree[treeX][treeY]) {
+                        if (checkCollisionCircleLine(circle, line))
+                            resolveCollisionCircleLine(circle, line);
+                    }
                 }
-                for (let line of lines)
-                    if (checkCollisionCircleLine(circle, line))
-                        resolveCollisionCircleLine(circle, line);
-                for (let other of circles) {
-                    if (other == circle) continue;
-                    if (checkCollisionCircleCircle(circle, other))
-                        resolveCollisionCircleCircle(circle, other);
+                for (let i = 0; i < 9; i++) {
+                    let treeX = (x - 1) + i % 3;
+                    let treeY = (y - 1) + Math.floor(i / 3);
+                    if (isNaN(treeX) || isNaN(treeY) || treeX >= treeWidth || treeX < 0 || treeY >= treeHeight || treeY < 0) 
+                        continue;
+                    for (let other of circleTree[treeX][treeY]) {
+                        if (other == circle) continue;
+                        if (checkCollisionCircleCircle(circle, other))
+                            resolveCollisionCircleCircle(circle, other);
+                    }
                 }
             }
         }
@@ -220,6 +293,8 @@ const setupBalls = () => {
             drawLine(line);
         for (let circle of circles)
             drawCircle(circle);
+        if (resizing) 
+            resizing = false;
         requestAnimationFrame(update);
     };
     requestAnimationFrame(update);
