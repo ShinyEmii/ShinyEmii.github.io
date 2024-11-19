@@ -58,6 +58,12 @@ const setupBalls = () => {
             case "2":
                 lines = [];
                 break;
+            case "3":
+                for (let circle of circles) {
+                    circle.vel.x += (Math.random() - 0.5) * 5000;
+                    circle.vel.y += (Math.random() - 0.5) * 5000;
+                }
+                break;
             case "ArrowLeft":
                 count = Math.max(1, count - 1);
                 countElement.innerText = `Ball count: ${count}`;
@@ -82,8 +88,8 @@ const setupBalls = () => {
         c.closePath();
         c.stroke();
     }
-    const drawCircle = (circle, color = "#fff") => {
-        c.fillStyle = color;
+    const drawCircle = (circle) => {
+        c.fillStyle = `rgb(${circle.color[0]}, ${circle.color[1]}, ${circle.color[2]})`;
         c.beginPath();
         c.arc(circle.pos.x, circle.pos.y, circle.r, 0, 2 * Math.PI);
         c.closePath();
@@ -173,8 +179,13 @@ const setupBalls = () => {
     const addLine = (a, b) => {
         lines.push({a: {...a}, b: {...b}});
     }
-    const addCircle = (pos, r, vel = vector(Math.random() / 10.0, Math.random() / 10.0)) => {
-        circles.push({pos: pos, r: r, vel: vel});
+
+    const getColor = () => {
+        return [Math.floor((0.5 + Math.random() * 0.5) * 255), Math.floor((0.5 + Math.random() * 0.5) * 255), Math.floor((0.5 + Math.random() * 0.5) * 255)];
+    }
+
+    const addCircle = (pos, r, vel = vector(Math.random() / 10.0, Math.random() / 10.0), color = getColor()) => {
+        circles.push({pos: pos, r: r, vel: vel, color: color});
     }
 
     const circleTree = [];
