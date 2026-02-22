@@ -2,45 +2,31 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>ShinyEmii - Home</title>
+        <title>ShinyEmii</title>
         <link rel="stylesheet" href="style.css">
-        <script src="balls.js"></script>
-        <script src="about.js"></script>
         <script src="main.js"></script>
     </head>
     <body>
-        <header>
-            <div class="scroll"></div>
-        </header>
+		<div id="attached">			
+			<div id="language-picker">
+				<div id="menu">
+					<p class="localized" id="languages"></p>
+				</div>
+				<div id="list">
+					<p id="english" class="language">english</p>
+					<p id="catala" class="language">català</p>
+					<p id="polish" class="language">polish</p>
+				</div>
+			</div>
+			<div id="scroll"></div>
+		</div>
         <content>
-            <div class="welcome">
-                <p class="title">˗ˏˋ ShinyEmii ˎˊ˗</p>
-            </div>
-            <div class="balls">
-                <div id="help">
-                    <p>Left Click - Ball</p>
-                    <p>Right Click - Line</p>
-                    <p>1 - Clear Balls</p>
-                    <p>2 - Clear Lines</p>                    
-                    <p>3 - EXPLODE!</p>
-                    <p>Arrow Left - Less balls</p>
-                    <p>Arrow Right - More balls</p>
-                    <p id="count">Ball count: 1</p>
-                </div>
-                <div id="debug">
-                    <p id="frameTime">Frame Time: 0ms</p>
-                    <p id="ballCount">Balls: 0</p>
-                    <p id="lineCount">Lines: 0</p>
-                </div>
-                <a id="info">idk i got bored...</a>
-                <canvas></canvas>
-            </div>
-            <div class="about">
-                <h1 id="click">Click me!</h1>
-            </div>
-            <div class="projects">
-                <h1>Website still worked on :3</h1>
-            </div>
+            <section id="welcome">
+                <h1>˗ˏˋ ShinyEmii ˎˊ˗</h1>
+            </section>
+            <section id="about">
+				<p class="localized" id="introduction"></p>
+            </section>
         </content>
     </body>
 </html>
